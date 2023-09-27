@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-xs-10 col-sm-10 col-md-10">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="customer_sale_pie"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-10 col-sm-10 col-md-10">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="date_wise_sale_bar"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-10 col-sm-10 col-md-10">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="customer_wise_weight_line"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascript %}
+<script>
+
+    function generateRandomColor(alpha) {
+        //alpha will be used for Colour brightness
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+
+
+    let customer_wise_sale_data = JSON.parse({{ context.customer_wise_sale | tojson }})
+    let customer_wise_sale_label = JSON.parse({{ context.customer_wise_sale_label | tojson }})
+
+    let date_wise_sale_data = JSON.parse({{ context.date_wise_sale | tojson }})
+    let date_wise_sale_label = JSON.parse({{ context.date_wise_sale_label | tojson }})
+
+    let customer_wise_weight_data = JSON.parse({{ context.customer_wise_weight | tojson }})
+    let customer_wise_weight_label = JSON.parse({{ context.customer_wise_weight_label | tojson }})
+
+    const backgroundColor1 = Array.from({ length: customer_wise_sale_data.length }, () => generateRandomColor(0.8));
+    console.log(backgroundColor1);
+
+    Chart.scaleService.updateScaleDefaults('linear', {
+        ticks: {
+            min: 0
+        }
+    });
+
+
+    let customer_sale_pie_chart = new Chart(customer_sale_pie, {
+        type: 'pie',
+        data: {
+            labels: customer_wise_sale_label,
+            datasets: [{
+                label: "Customer Wise Sales - Pie",
+                data: customer_wise_sale_data,
+                backgroundColor: backgroundColor1,
+
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                hoverBackgroundColor: 'pink',
+                pointHoverRadius: 5
+            }],
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Customer Wise Sales - Pie",
+                fontSize: 20,
+            },
+            legend: {
+                position: "right",
+                labels: {
+                    fontColor: "gray"
+                },
+                display: true,
+            },
+
+            elements: {
+                hitRadius: 3,
+            }
+        }
+    })
+
+    const backgroundColor2 = Array.from({ length: date_wise_sale_data.length }, () => generateRandomColor(0.8));
+
+    let date_wise_sale_bar_chart = new Chart(date_wise_sale_bar, {
+        type: 'bar',
+        data: {
+            labels: date_wise_sale_label,
+            datasets: [{
+                label: "Date Wise Sales - Bar",
+                data: date_wise_sale_data,
+                backgroundColor: backgroundColor2,
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                hoverBackgroundColor: 'rgba(154, 245, 140)',
+                pointHoverRadius: 5
+            }],
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Date Wise Sales - Bar",
+                fontSize: 20,
+            },
+            legend: {
+                position: "right",
+                labels: {
+                    fontColor: "gray"
+                },
+                display: true,
+            },
+
+            elements: {
+                hitRadius: 3,
+            }
+        }
+    })
+
+    const backgroundColor3 = Array.from({ length: customer_wise_sale_data.length }, () => generateRandomColor(0.8));
+
+    let customer_wise_weight_line_chart = new Chart(document.getElementById("customer_wise_weight_line"), {
+        type: "line",
+        data:
+        {
+            labels: customer_wise_weight_label,
+            datasets: [{
+                label: "Customer Wise Sales - Line",
+
+                data: customer_wise_weight_data,
+                fill: false,
+                borderColor: "rgb(75, 192, 192)",
+                lineTension: 0.1
+            }]
+        },
+        options: {}
+    });
+
+</script>
+{% endblock%}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-sm-10 ml-auto mr-auto ">
+    <H2>Sales Details</H2>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">S. No.</th>
+                {% for head in context.header %}
+                <th>{{head}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for val in context.data %}
+            <tr>
+                <th scope="row">{{loop.index}}</th>
+                {% for i in val.values() %}
+
+                <th> {{ i }}</th>
+
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
